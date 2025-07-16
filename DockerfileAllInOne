@@ -1,0 +1,41 @@
+# Stage 2: Create the final image
+FROM ubuntu:20.04
+WORKDIR /home/node/app
+# Set MySQL root password
+ENV MYSQL_ROOT_PASSWORD=123456
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Install necessary packages
+RUN apt update && apt install -y \
+    curl \
+    mysql-server \
+    redis-server \
+    build-essential
+
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
+
+# Install PM2 globally
+RUN npm install -g pm2
+RUN npm install -g yarn
+
+COPY ./package.json ./
+COPY ./yarn.lock ./
+RUN yarn install
+COPY . .
+RUN yarn build
+
+# Expose ports for MySQL and Redis
+EXPOSE 3306
+EXPOSE 6379
+EXPOSE 3000
+
+COPY run.sh /run.sh
+RUN chmod +x /run.sh
+
+# CREATE USER 'eos'@'localhost' IDENTIFIED BY 'admin123';
+# GRANT ALL PRIVILEGES ON *.* TO 'eos'@'localhost';
+# CREATE DATABASE eos;
+# Start MySQL and Redis services
+# CMD service mysql start && service redis-server start
+CMD ["/run.sh"]
