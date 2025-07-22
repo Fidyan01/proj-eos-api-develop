@@ -29,5 +29,18 @@ services:
     volumes:
       - .data/redis:/data
 
+  api:
+    image: proj-eos-api              
+    container_name: proj-eos-api-app
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000        
+      
+    depends_on:
+      - mysql
+      - redis
+    restart: on-failure
+
 volumes: 
   db_eos:
