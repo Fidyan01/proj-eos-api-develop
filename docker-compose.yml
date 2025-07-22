@@ -32,10 +32,10 @@ services:
   api:
     image: proj-eos-api              
     container_name: proj-eos-api-app
-    ports:
-      - "8000:3000"
+   ports:
+      - "8000:3002"  # Expose 3002 inside container on 8000 outside
     environment:
-      - PORT=8000        
+      - PORT=3002      
       
     depends_on:
       - mysql
