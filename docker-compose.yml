@@ -32,15 +32,14 @@ services:
   api:
     image: proj-eos-api              
     container_name: proj-eos-api-app
-   ports:
+    ports:
       - "8000:3002"  # Expose 3002 inside container on 8000 outside
     environment:
       - PORT=3002      
-      
     depends_on:
       - mysql
       - redis
     restart: on-failure
 
-volumes: 
+volumes:
   db_eos:
