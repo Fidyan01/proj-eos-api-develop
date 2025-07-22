@@ -33,7 +33,7 @@ services:
     image: proj-eos-api              
     container_name: proj-eos-api-app
     ports:
-      - "8000:8000"
+      - "8000:3000"
     environment:
       - PORT=8000        
       
