@@ -4,7 +4,7 @@ COPY ./package.json ./
 COPY ./yarn.lock ./
 RUN chown -R node:node /home/node/app
 RUN yarn install
-Run yarn typeorm:migrate
+RUN yarn typeorm:migrate
 COPY . .
 RUN yarn build
 RUN rm -r node_modules
