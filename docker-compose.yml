@@ -35,7 +35,9 @@ services:
     ports:
       - "8000:3002"  # Expose 3002 inside container on 8000 outside
     environment:
-      - PORT=3002      
+      - PORT=3002  
+    env_file:
+      - .env      
     depends_on:
       - mysql
       - redis
