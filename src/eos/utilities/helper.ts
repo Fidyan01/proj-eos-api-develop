@@ -350,8 +350,10 @@ export async function batchStoreTimestampsPayload(
   const txData = scInstance?.methods
     .addEventSubStageTimestamps(metaEOSIDs, EOSIDs, metaInfoArr, infoArr)
     .encodeABI();
+    console.log(`add events massage ==> ${metaEOSIDs},${EOSIDs}, ${metaInfoArr}, ${infoArr}`);
   return txData;
 }
+
 
 /**
  * The function `batchHeaderPayload` takes an array of data, extracts hashIDs from each element, and
@@ -390,6 +392,7 @@ export async function batchHeaderPayload(data: any): Promise<string> {
  * provider URL. It is used to connect to the Ethereum network and interact with the smart contract.
  * @returns a Promise that resolves to a string.
  */
+
 export async function estimatedGasForBatchStoreTimestampsPayload(
   batchStoreTimestampsDTO: SaveDataTimestampsDTO,
   scAddress: string,
@@ -416,12 +419,21 @@ export async function estimatedGasForBatchStoreTimestampsPayload(
     return ele.info;
   });
 
+   console.log("Payload going to addEventSubStageTimestamps:");
+     console.log(` 
+     metaEOSIDs: ${JSON.stringify(metaEOSIDs)}, 
+     EOSIDs: ${JSON.stringify(EOSIDs)}, 
+     metaInfoArr: ${JSON.stringify(metaInfoArr)}, 
+     infoArr: ${JSON.stringify(infoArr)}`
+  );
+
   return scInstance?.methods
     .addEventSubStageTimestamps(metaEOSIDs, EOSIDs, metaInfoArr, infoArr)
     .estimateGas({
       from: sender,
     });
 }
+
 
 /**
  * The function `estimatedGasForBatchHeaderPayload` calculates the estimated gas required to execute a

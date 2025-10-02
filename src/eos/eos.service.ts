@@ -340,19 +340,23 @@ export default class EosService {
       return {
         eosId: value.EOSID,
         eventSubStage: value.EventSubStage,
-        timestamp: Math.floor(new Date(value.Timestamp).getTime()),
-        field1: value.Field1,
-        field2: value.Field2,
-        field3: value.Field3,
-        field4: value.Field4,
-        field5: encodeStringToHex(value.Field5, 32),
-        field6: encodeStringToHex(value.Field6),
-        field7: encodeStringToHex(value.Field7),
-        field8: encodeStringToHex(value.Field8),
-        field9: encodeStringToHex(value.Field9),
+        timestamp: Math.floor(new Date(value.Timestamp).getTime() / 1000),
+
+        field1: value.Field1 ?? 0,
+        field2: value.Field2 ?? 0,
+        field3: value.Field3 ?? 0,
+        field4: value.Field4 ?? 0,
+
+        field5: value.Field5 ? encodeStringToHex(value.Field5, 32) : "0x" + "00".repeat(32),
+        field6: value.Field6 ? encodeStringToHex(value.Field6, 16) : "0x" + "00".repeat(16),
+        field7: value.Field7 ? encodeStringToHex(value.Field7, 16) : "0x" + "00".repeat(16),
+	field8: value.Field8 ? encodeStringToHex(value.Field8, 16) : "0x" + "00".repeat(16),
+        field9: value.Field9 ? encodeStringToHex(value.Field9, 16) : "0x" + "00".repeat(16),
+
         hashId: this.makeHashIDFromTimestamp(value),
       };
     });
+    console.log('formattedData', formattedData);
     // check on blockchain level
     const statuses = await batchVerifyTimestamp(
       formattedData,
@@ -362,6 +366,7 @@ export default class EosService {
     const txHashes = [];
     const notes = [];
     for (let i = 0; i < formattedData.length; i++) {
+      console.log("formattedData status2");
       const data = await this.eosV2Repository.findOne({
         where: {
           EOSID: formattedData[i].eosId,
@@ -374,6 +379,7 @@ export default class EosService {
 
     // format data and return response
     return statuses.map((status, i) => {
+      console.log("formattedData status3");
       return {
         EventSubStage: batchQueryDTO[i].EventSubStage,
         Verified: status == 'Y' ? 'True' : 'False',
@@ -390,9 +396,11 @@ export default class EosService {
     storeTimestampsDTO: SaveDataTimestampsDTO,
   ): Promise<any> {
     if (storeTimestampsDTO.metaData.length === 0) return;
-
+     console.log("submitBatchHashOnchain 1",storeTimestampsDTO.metaData.length);
     // create payload from data to send to on chain
     const payload = await batchStoreTimestampsPayload(storeTimestampsDTO);
+
+
 
     let estimatedGas;
     // try 4 times
